@@ -9,8 +9,22 @@ import Foundation
 import CKB
 
 class CKB {
-    func faucet(address: String) -> String? {
+    let api: APIClient
+
+    static var shared = CKB()
+
+    init() {
+        api = APIClient()
+        api.setMrubyConfig(
+            outPoint: OutPoint(hash: "0xe33e7492d412979a96f55c9158aa89b7ae96ffa6410055bd63ff4a171b936b8b", index: 0),
+            cellHash: "0x00ccb858f841db7ece8833a77de158b84af4c8f43a69dbb0f43de87faabfde32"
+        )
+    }
+
+    func faucet(address: String) throws -> H256? {
         return nil
+//        let asw = try AlwaysSuccessAccount(api: api)
+//        return try asw.sendCapacity(targetAddress: address, capacity: 10000)
     }
 
     static func privateToAddress(_ privateKey: String) throws -> String {
