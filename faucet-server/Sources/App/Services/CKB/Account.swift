@@ -72,7 +72,7 @@ extension Account {
                     fromBlockNumber = toBlockNumber + 1
                 }
                 print("\(fromBlockNumber) ~ \(toBlockNumber)")
-                if var cells = try? api.getCellsByLockHash(lockHash: address, from: fromBlockNumber, to: toBlockNumber), cells.count > 0 {
+                if var cells = try? api.getCellsByTypeHash(typeHash: address, from: fromBlockNumber, to: toBlockNumber), cells.count > 0 {
                     defer {
                         self.cells = cells
                     }
@@ -102,8 +102,7 @@ extension Account {
         var inputCapacities: Capacity = 0
         var inputs = [CellInput]()
         for cell in try getUnspentCells() {
-//            let input = CellInput(previousOutput: cell.outPoint, unlock: unlockScript)
-            let input = CellInput(previousOutput: cell.outPoint, args: [])
+            let input = CellInput(previousOutput: cell.outPoint, unlock: unlockScript)
             inputs.append(input)
             inputCapacities += cell.capacity
             if inputCapacities - capacity >= minCapacity {
@@ -118,14 +117,11 @@ extension Account {
 
     func generateTransaction(targetAddress: H256, capacity: Capacity) throws -> Transaction {
         let validInputs = try gatherInputs(capacity: capacity, minCapacity: minCellCapacity)
-        let script = Script(version: 0, args: [targetAddress], binaryHash: "")
         var outputs: [CellOutput] = [
-//            CellOutput(capacity: capacity, data: "0x", lock: targetAddress, type: nil)
-            CellOutput(capacity: capacity, data: "0x", lock: script, type: nil)
+            CellOutput(capacity: capacity, data: "0x", lock: targetAddress, type: nil)
         ]
         if validInputs.capacity > capacity {
-            outputs.append(CellOutput(capacity: validInputs.capacity - capacity, data: "0x", lock: script, type: nil))
-//            outputs.append(CellOutput(capacity: validInputs.capacity - capacity, data: "0x", lock: address, type: nil))
+            outputs.append(CellOutput(capacity: validInputs.capacity - capacity, data: "0x", lock: address, type: nil))
         }
         return Transaction(deps: deps, inputs: validInputs.cellInputs, outputs: outputs, hash: privateKey)
     }
