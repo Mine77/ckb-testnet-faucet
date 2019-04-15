@@ -15,15 +15,11 @@ class CKB {
 
     init() {
         api = APIClient()
-        api.setMrubyConfig(
-            outPoint: OutPoint(hash: "0xe33e7492d412979a96f55c9158aa89b7ae96ffa6410055bd63ff4a171b936b8b", index: 0),
-            cellHash: "0x00ccb858f841db7ece8833a77de158b84af4c8f43a69dbb0f43de87faabfde32"
-        )
     }
-
+    
     func faucet(address: String) throws -> H256? {
         let asw = try AlwaysSuccessAccount(api: api)
-        return try asw.sendCapacity(targetAddress: address, capacity: 10000)
+        return try asw.sendCapacity(targetLock: Script.verifyScript(for: address, binaryHash: ""), capacity: 10000)
     }
 
     static func privateToAddress(_ privateKey: String) throws -> String {
@@ -69,3 +65,23 @@ extension CKB {
         case invalidPublicKey = "Invalid publicKey"
     }
 }
+
+//let expect = H256::from_hex_str("32a3cc6b5b56017262abe1e3898bc56b7ac3fa540570d8c39e7bd3db136d1480").unwrap();
+//if transaction.hash() == expect {
+//    let hash = output.lock.hash();
+//    print!("\nlock_hash\n");
+//    print!("{}\n", hash);
+//    print!("{}\n", lock_hash);
+//    print!("\n");
+//    if hash == lock_hash {
+//        println!("yyyyyyy-hash");
+//    } else {
+//        println!("nnnnnnn-hash");
+//    }
+//    if (!transaction_meta.is_dead(i)) {
+//        print!("yyyyyyy-meta");
+//    } else {
+//        print!("nnnnnnn-meta");
+//    }
+//    print!("\n");
+//}

@@ -8,7 +8,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "3.0.0"),
         .package(url: "https://github.com/cezres/SQLite.swift.git", from: "0.11.6"),
-        .package(url: "https://github.com/nervosnetwork/ckb-sdk-swift", .revision("bc9a82f339ebb9e638f9f779aa75caa8acc5446b"))
+//        .package(url: "https://github.com/nervosnetwork/ckb-sdk-swift", .revision("bc9a82f339ebb9e638f9f779aa75caa8acc5446b"))
+        .package(url: "https://github.com/cezres/ckb-sdk-swift", .revision("9341dccb5f231b665d577d17f4587a23ab53aaed"))
     ],
     targets: [
         .target(name: "App", dependencies: [

@@ -9,20 +9,17 @@ import Foundation
 import CKB
 
 class AlwaysSuccessAccount: Account {
-    private let cellHash: H256
-    private let scriptOutOpint: OutPoint
-
-    public init(api: APIClient) throws {
-        cellHash = try api.alwaysSuccessCellHash()
-        scriptOutOpint = try api.alwaysSuccessScriptOutPoint()
-        super.init(privateKey: "", api: api)
+    override var lock: Script {
+        return Script.alwaysSuccess
     }
 
-    override var unlockScript: Script {
-        return Script(version: 0, binary: nil, reference: cellHash, signedArgs: [], args: [])
+    init(api: APIClient) throws {
+        try super.init(api: api, privateKey: "")
     }
 
-    override var deps: [OutPoint] {
-        return [scriptOutOpint]
+    override func gatherInputs(capacity: Capacity, minCapacity: Capacity = minCellCapacity) throws -> ValidInputs {
+        let validInputs = try super.gatherInputs(capacity: capacity, minCapacity: minCapacity)
+        let cellInputs = validInputs.cellInputs.map { CellInput(previousOutput: $0.previousOutput, args: []) }
+        return ValidInputs(cellInputs: cellInputs, capacity: validInputs.capacity)
     }
 }
